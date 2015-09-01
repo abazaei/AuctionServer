@@ -1,9 +1,12 @@
 package com.example.auctionapplication;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.net.Socket;
 
 import com.example.auctionapplicationIntermed.AuctionItem;
+import com.example.auctionapplicationIntermed.CrudModel;
 
 import ItemService.ItemServiceClient;
 import android.content.Intent;
@@ -61,7 +64,10 @@ public class AuctionController extends Controller<AuctionModel> implements Aucti
 
 	@Override	
 	public void delete(int itemID) throws IOException {
-		try {
+		try (Socket s = new Socket("10.0.2.2", 31415);
+				ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())){
+			oos.writeObject(new CrudModel(CrudModel.Command.DELETE, String.valueOf(itemID)));
+			
 			ItemServiceClient.delete((long) itemID);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

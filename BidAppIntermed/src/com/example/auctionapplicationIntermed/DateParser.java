@@ -73,7 +73,7 @@ public class DateParser {
 	}
 
 	public static String format(Date toFormat){
-		SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
 		return sdf.format(toFormat);
 

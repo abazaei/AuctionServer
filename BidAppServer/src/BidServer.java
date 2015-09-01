@@ -35,7 +35,8 @@ import com.example.auctionapplicationIntermed.ItemNotFoundException;
 public class BidServer{
 
 	static HashMap<Long, AuctionItem> itemlist = new HashMap<>();
-	File itemdb = new File("/itemDB.txt");
+	private static File itemdb = new File("itemDB.txt");
+	private static File IDdb = new File("idDB.txt");
 	private static int AvailID = 0;
 
 	//showDirectory
@@ -66,15 +67,18 @@ public class BidServer{
 						break;
 					case ADD:
 						System.out.println("ADD");
-						Pattern pattern = Pattern.compile(("NAME: (\\w*) DESC: (\\w*) STARTPRICE: ([0-9]*\\.*[0-9]*) STARTDATE: ([0-9]{1,2}\\/[0-9]{1,2}\\/[0-9]{2,4}) ENDDATE: ([0-9]{1,2}\\/[0-9]{1,2}\\/[0-9]{2,4})"));
+						Pattern pattern = Pattern.compile(("NAME: (\\w*) DESC: (\\w*) STARTPRICE: ([0-9]*\\.*[0-9]*) STARTDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4}) ENDDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4})"));
 						Matcher matcher = pattern.matcher(command.getArgs());
 						// price name desc id start end
-						iss.addItem(new AuctionItem( BigDecimal.valueOf(Double.valueOf(matcher.group(2))), matcher.group(0), matcher.group(1) + " ", getHighestID(), DateParser.parse(matcher.group(3)), DateParser.parse(matcher.group(4))));
-						if(matcher.matches()){
-							System.out.println("Adding: " + matcher.group(0));
+						if(matcher.matches()){	
+							int i = getHighestID();
+							iss.addItem(new AuctionItem( BigDecimal.valueOf(Double.valueOf(matcher.group(3))), matcher.group(1), matcher.group(2), i, DateParser.parse(matcher.group(4)), DateParser.parse(matcher.group(5))));
+							writeToDB(new AuctionItem( BigDecimal.valueOf(Double.valueOf(matcher.group(3))), matcher.group(1), matcher.group(2), i, DateParser.parse(matcher.group(4)), DateParser.parse(matcher.group(5))));
+							System.out.println("Adding: " + matcher.group(1));
 							//ItemServiceClient.addItem(new Item(organize the groups in the way you want.
 							
-						}
+						}else
+							System.out.println("does not contain the pattern");
 						break;
 					case BID:
 						Pattern pattern2 = Pattern.compile(("ID: ([0-9]*) BIDUP: ([0-9]*\\.[0-9]*)"));
@@ -85,7 +89,7 @@ public class BidServer{
 
 						break;
 					case UPDATE:
-						Pattern pattern3 = Pattern.compile(("ID: ([0-9]*) NAME: ([a-z]*[A-Z]*) DESC: ([a-z]*[A-Z]*) STARTPRICE: ([0-9]*\\.[0-9]*) STARTDATE: ([0-9]{1,2}/[0-9]{1,2}/[0-9]{1,4}) ENDDATE: ([0-9]/[0-9]/[0-9]*) IMGREF: (.*)"));
+						Pattern pattern3 = Pattern.compile(("NAME: (\\w*) DESC: (\\w*) STARTPRICE: ([0-9]*\\.*[0-9]*) STARTDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4}) ENDDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4})"));
 						Matcher matcher3 = pattern3.matcher(command.getArgs());
 						if(matcher3.matches()){
 							//ItemServiceClient.deleteItem(Integer.valueOf(matcher3.group(1)
@@ -124,22 +128,30 @@ public class BidServer{
 		}
 	}
 	
-	private static int getHighestID(){
-		return 9;
+	private static int getHighestID() throws IOException{
+		BufferedReader br = new BufferedReader(new FileReader(IDdb));
+		
+		String dummy = "";
+		while((dummy = br.readLine()) != null){
+			System.out.println(dummy);
+			if(dummy.startsWith("HIGH: ")){
+				FileWriter fw = new FileWriter(IDdb);
+				System.out.println(":" + dummy.substring(0, 6) + (Integer.valueOf(dummy.substring(6)) + 1));
+				fw.write(dummy.substring(0, 6) + (Integer.valueOf(dummy.substring(6)) + 1));
+				fw.close();
+				return Integer.valueOf(dummy.substring(6));
+			}
+		}
+		return -1;
+		
 	}
 	
-	public void writeToDB(AuctionItem newitem) throws IOException{
-		
-		RandomAccessFile raf = new RandomAccessFile(itemdb, "rw");
+	public static void writeToDB(AuctionItem newitem) throws IOException{
+		itemdb.createNewFile();
 		FileWriter fw = new FileWriter(itemdb,true);
 		BufferedReader br = new BufferedReader(new FileReader(itemdb));
-		
-		if(br.read() != 'A' && br.read() != 'D' && br.read() != 'B' && br.read() != 'U'){
-			raf.seek(0);
-			raf.write(br.readLine().getBytes());
-			raf.close();
-		}
 
+		
 		fw.write("ADD;"+ newitem.getItemID() + ";" + newitem.getName()+";"+newitem.getDescription()+";"+newitem.getBidPrice()+";"+DateParser.format(newitem.getStartDate())+";"
 				+DateParser.format(newitem.getEndDate()));
 		fw.write("\n");

@@ -1,0 +1,7 @@
+package snippet;
+
+public class Snippet {
+	
+	private static File itemdb = new File("itemDB.txt");
+}
+

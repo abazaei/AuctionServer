@@ -83,7 +83,7 @@ public class ItemAddView extends RelativeLayout implements View<SearchModel>, Mo
 				try {
 					System.out.println("add item clicked");
 //					listener.addItem(new AuctionItem(startBid,ItemName.getText().toString(), ItemDescription.getText().toString().replaceAll(" ", "_"), listener.idGenerator(), startDate, endDate));
-					listener.addItem(new CrudModel(CrudModel.Command.ADD, "NAME: " + ItemName.getText().toString() + " DESC: " + ItemDescription.getText().toString() + " STARTPRICE: " + ItemPrice.getText().toString() + " STARTDATE: " + StartDate.getText().toString() + " ENDDATE: " + EndDate.getText().toString()));
+					listener.addItem(new CrudModel(CrudModel.Command.ADD, "NAME: " + ItemName.getText().toString() + " DESC: " + ItemDescription.getText().toString() + " STARTPRICE: " + startBid.toString() + " STARTDATE: " + DateParser.format(startDate) + " ENDDATE: " + DateParser.format(endDate)));
 				} catch (IOException e) {
 					
 					e.printStackTrace();
