@@ -1,0 +1,134 @@
+<com.example.auctionapplication.ItemAddView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight="0.88"
+    android:baselineAligned="false"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.auctionapplication.ItemAddController" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/enterName"
+        android:layout_alignParentLeft="true"
+        android:text="@string/name_" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="30dp"
+        android:text="@string/Description" />
+
+    <EditText
+        android:id="@+id/enterItemDescrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_marginLeft="14dp"
+        android:layout_toRightOf="@+id/textView3"
+        android:ems="10"
+        android:hint="@string/Item_Description"
+        android:inputType="text"
+        android:width="200dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_below="@+id/textView3"
+        android:layout_marginTop="34dp"
+        android:text="@string/Price" />
+
+    <EditText
+        android:id="@+id/enterItemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignLeft="@+id/enterItemDescrip"
+        android:ems="10"
+        android:hint="Item Price"
+        android:inputType="text" />
+
+     
+    
+    <EditText
+        android:id="@+id/enterName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/enterItemDescrip"
+        android:layout_alignRight="@+id/enterItemDescrip"
+        android:layout_below="@+id/additemtitle"
+        android:ems="10"
+        android:hint="@string/Item_Name"
+        android:inputType="text"
+        android:width="150dp" >
+
+       
+            
+        
+    </EditText>
+
+    <TextView
+        android:id="@+id/additemtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/Create_an_Item"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/Enter_End_Date"
+        android:layout_marginBottom="30dp"
+        android:text="@string/addItem" />
+
+    <TextView
+        android:id="@+id/endDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/enterEndDate"
+        android:layout_alignLeft="@+id/textView4"
+        android:text="@string/End_Date" />
+
+    <EditText
+        android:id="@+id/enterEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/enterItemPrice"
+        android:layout_below="@+id/enterStartDate"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:hint="@string/Enter_End_Date" />
+
+    <TextView
+        android:id="@+id/startDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="28dp"
+        android:text="@string/Start_Date" />
+
+    <EditText
+        android:id="@+id/enterStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/startDate"
+        android:layout_alignLeft="@+id/enterItemPrice"
+        android:ems="10"
+        android:hint="@string/Enter_Start_Date" />
+
+</com.example.auctionapplication.ItemAddView>

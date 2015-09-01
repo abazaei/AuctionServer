@@ -1,0 +1,1 @@
+ADD 1 Car A_brand_new_car 15,500 

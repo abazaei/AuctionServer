@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Auction Application</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="Auctionee">Auctionee</string>
+    <string name="Bid">Bid</string>
+    <string name="Item">Item</string>
+    <string name="Start">Start</string>
+    <string name="Mercedes_Benz">Mercedes Benz</string>
+    <string name="Bid_$5">Bid $5</string>
+    <string name="Rate_My_App">Rate My App!</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="Search">Search</string>
+    <string name="Input_your_search">Input your search!</string>
+    <string name="Search_Button">Search Button</string>
+    <string name="title_activity_item_add">ItemAdd</string>
+    <string name="name_">Name:</string>
+    <string name="Create_an_Item">Create an Item</string>
+    <string name="Description">Description:</string>
+    <string name="Item_Name">Item Name</string>
+    <string name="Item_Description">Item Description</string>
+    <string name="Price">Price:</string>
+    <string name="End_Date">End Date:</string>
+    <string name="Change_Image">Change Image</string>
+    <string name="addItem">Add Item</string>
+    <string name="Start_Date">Start Date:</string>
+    <string name="Enter_End_Date">Enter End Date</string>
+    <string name="Enter_Start_Date">Enter Start Date</string>
+    <string name="Add_an_Item">Add an Item</string>
+    <string name="updateItem">Update</string>
+    <string name="Edit_Item">Edit Item</string>
+    <string name="Edit_an_Item">Edit an Item</string>
+    <string name="Delete_Item">Delete</string>
+
+</resources>
