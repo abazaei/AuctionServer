@@ -2,6 +2,8 @@ package com.example.auctionapplication.search;
 
 import com.example.auctionapplicationIntermed.AuctionItem;
 
+
+
 public class Contain implements Predicate<AuctionItem>{
 
 	private String text;

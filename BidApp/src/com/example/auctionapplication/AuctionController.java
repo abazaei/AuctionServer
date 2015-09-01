@@ -3,7 +3,7 @@ package com.example.auctionapplication;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.example.auctionapplicationIntermed.AuctionItem;
+
 
 import ItemService.ItemServiceClient;
 import android.content.Intent;
