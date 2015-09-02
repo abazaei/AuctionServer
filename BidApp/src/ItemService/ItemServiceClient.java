@@ -46,7 +46,7 @@ public class ItemServiceClient implements ItemService {
 	}
 
 	public AuctionItem bid(long id, BigDecimal bidIncrease) throws Exception{
-		
+		System.out.println("Name of Item Bidded on Is : "+itemlist.get(id).getName());
 		if(itemlist.get(id).getEndDate().after(new Date())){
 			itemlist.get(id).setBidPrice(itemlist.get(id).getBidPrice().add(bidIncrease));
 			//connect to socket

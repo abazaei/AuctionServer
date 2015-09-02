@@ -30,12 +30,8 @@ public class SearchView extends LinearLayout implements View<SearchModel>, Model
 	private Double searchedItemBid;
 
 	Button addItemButton;
-	Button searchButton;
+	public static Button searchButton;
 
-	public void onResume(){
-		
-	}
-	
 	public SearchView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
@@ -45,8 +41,16 @@ public class SearchView extends LinearLayout implements View<SearchModel>, Model
 
 	@Override
 	public void update(SearchModel data) {
+		System.out.println("update");
 		if(listView!=null){
-			listView.setAdapter(new AuctionAdapter(this.getContext(), data.getItems().values()));
+			System.out.println("inside if");
+			AuctionAdapter aA = new AuctionAdapter(this.getContext(), data.getItems().values());
+			
+			listView.setAdapter(aA);
+			
+			
+
+			aA.notifyDataSetChanged();
 
 		}
 
@@ -75,7 +79,7 @@ public class SearchView extends LinearLayout implements View<SearchModel>, Model
 		super.onFinishInflate();
 
 		listView = (ListView)findViewById(R.id.listofitems);
-//		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		//		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 
 		searchQuery = (EditText)findViewById(R.id.searchspace);
@@ -91,32 +95,30 @@ public class SearchView extends LinearLayout implements View<SearchModel>, Model
 
 			}
 		});	
-		
+
 		searchButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(android.view.View v) {
-//				Log.w("ERRORONCLICK!!!!", searchQuery.getText().toString());
-				
-				listener.searchItems(searchQuery.getText().toString());
-//				listener.sendCrud(CrudModel.Command.READ, searchQuery.getText().toString());
-				
+				//				Log.w("ERRORONCLICK!!!!", searchQuery.getText().toString());
+				System.out.println("clicked");
+				System.out.println(searchQuery);
+				System.out.println(":" + searchQuery.getText());
+					listener.searchItems(searchQuery.getText().toString());
+				//				listener.sendCrud(CrudModel.Command.READ, searchQuery.getText().toString());
+
 
 			}
 		});
 		addItemButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(android.view.View v) {
-				
+
 				listener.startItemAddPage();
-				
+
 			}
 		});
-		
-
-		
-
 
 	}
 }

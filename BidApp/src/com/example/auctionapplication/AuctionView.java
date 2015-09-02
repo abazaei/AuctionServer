@@ -1,10 +1,15 @@
 package com.example.auctionapplication;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.net.Socket;
 import java.text.NumberFormat;
 import java.util.Date;
 
+import com.example.auctionapplicationIntermed.CrudModel;
+import com.example.auctionapplicationIntermed.CrudModel.Command;
 import com.example.auctionapplicationIntermed.DateParser;
 import com.example.auctionapplicationIntermed.MoneyParser;
 
@@ -14,6 +19,7 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +33,11 @@ public class AuctionView extends LinearLayout implements View<AuctionModel>, Mod
 	private Button BidButton;
 	private Button BidButton5;
 	private Button EditButton;
+	
+	private int firstRun = 0;
+	private BigDecimal bidIncrease = new BigDecimal(0);
+
+	private EditText BidField;
 
 	private TextView ItemForSale;
 	private TextView ItemPrice;
@@ -55,7 +66,6 @@ public class AuctionView extends LinearLayout implements View<AuctionModel>, Mod
 
 		super.onFinishInflate();
 		BidButton = (Button)findViewById(R.id.bid_button);
-		BidButton5 = (Button)findViewById(R.id.bid_button5);
 		EditButton = (Button)findViewById(R.id.editButton);
 		DeleteButton = (Button)findViewById(R.id.deleteButton);
 		Description = (TextView)findViewById(R.id.itemDescription);
@@ -63,24 +73,25 @@ public class AuctionView extends LinearLayout implements View<AuctionModel>, Mod
 		ItemPrice = (TextView)findViewById(R.id.itembidprice);
 		image = (ImageView)findViewById(R.id.imageView1);
 		DateLeftField = (TextView)findViewById(R.id.timeleftfield);
+		BidField = (EditText)findViewById(R.id.BidEditField);
 
 		if(model != null)
-			if(model.getItem().getEndDate().before(new Date())){
-				BidButton.setVisibility(INVISIBLE);
-				BidButton5.setVisibility(INVISIBLE);
-			}
+			//			if(model.getItem().getEndDate().before(new Date())){
+			////				BidButton.setVisibility(INVISIBLE);
+			////				BidButton5.setVisibility(INVISIBLE);
+			//			}
 
-		EditButton.setOnClickListener(new OnClickListener() {
+			EditButton.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(android.view.View v) {
-				listener.editItem();
+				@Override
+				public void onClick(android.view.View v) {
+					listener.editItem();
 
-			}
-		});
+				}
+			});
 
 		DeleteButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(android.view.View v) {
 				try {
@@ -91,50 +102,61 @@ public class AuctionView extends LinearLayout implements View<AuctionModel>, Mod
 				}
 			}
 		});
-		
+
 		BidButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(android.view.View v) {
 
-				try {
-					model.setItem(isc.bid(model.getItem().getItemID(), BigDecimal.valueOf(1.0)));
-				} catch (Exception e) {
-					Toast.makeText(getContext(), "Outdated Item!", Toast.LENGTH_SHORT).show();
-				}
-				Toast.makeText(getContext(), "Bid Placed at "+ ItemPrice.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+				Thread i = new Thread(new Runnable() {
 
-			}	
-		});	
-		BidButton5.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(android.view.View v) {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							System.out.println("Model on BidButton 5: "+model.getItem().getName());
+							Socket s = new Socket("10.0.2.2", 31415);
+							ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+							oos.writeObject(new CrudModel(Command.BID,"ID: " +model.getItem().getItemID()+ " " + "BIDUP: "+ Integer.parseInt(BidField.getText().toString())));
+							//							model.setItem(isc.bid(model.getItem().getItemID(), BigDecimal.valueOf(5.0)));
+							oos.flush();
+							listener.updatePrice(model.getItem().getBidPrice().add(BigDecimal.valueOf(Long.valueOf((BidField.getText().toString())))));
 
-				try {
-					model.setItem(isc.bid(model.getItem().getItemID(), BigDecimal.valueOf(5.0)));
-				} catch (Exception e) {
-					Toast.makeText(getContext(), "Outdated Item!", Toast.LENGTH_SHORT).show();
-				}
-				Toast.makeText(getContext(), "Bid Placed at "+ ItemPrice.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+						} catch (Exception e) {
 
-			}	
+							e.printStackTrace();
+						}
+
+					}	
+				});
+				i.start();
+				bidIncrease = (model.getItem().getBidPrice().add(BigDecimal.valueOf(Long.valueOf((BidField.getText().toString())))));
+				System.out.println(bidIncrease.intValue() + "::");
+				Toast.makeText(getContext(), "Bid Placed at "+ bidIncrease + "!", Toast.LENGTH_SHORT).show();
+
+			}
+
+
 		});	
 		System.out.println("ON Finish Inflate END");
+		firstRun = 1;
 	}
 	public void setListener(View.Listener listener){
 		this.listener = (Listener)listener;
 
 	}
+
 	@Override
 	public void update(AuctionModel data) {
 		model = data;
-		
+		System.out.println("updating");
 		if(data.getItem() != null){
 			int id = getResources().getIdentifier(data.getItem().getImage(), "drawable", getContext().getPackageName());
 
 
 			ItemForSale.setText(data.getItem().getName());
 			Description.setText(data.getItem().getDescription());
-			ItemPrice.setText(("$"+MoneyParser.format(data.getItem().getBidPrice()))); //number format this
+			System.out.println("formatting number: " + bidIncrease);
+			ItemPrice.setText(("$" + (bidIncrease))); //number format this
 			image.setImageDrawable(getResources().getDrawable(id));
 			DateLeftField.setText(DateParser.formatTimeUntil(data.getItem().getEndDate()));
 		}
@@ -146,6 +168,7 @@ public class AuctionView extends LinearLayout implements View<AuctionModel>, Mod
 		void productDisplay(String name);
 		void delete(int itemID) throws IOException;
 		void editItem();
+		void updatePrice(BigDecimal d);
 	}
 
 	@Override

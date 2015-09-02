@@ -37,8 +37,8 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="243dp"
-        android:layout_height="292dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:baselineAlignBottom="true"
         android:scaleType="fitXY"
@@ -73,10 +73,8 @@
 
         <Button
             android:id="@+id/bid_button"
-            android:layout_width="120dp"
-            android:layout_height="36dp"
-            android:layout_weight="0.13"
-            android:background="@drawable/buttonshape"
+            android:layout_width="125dp"
+            android:layout_height="75dp"
             android:text="@string/Bid"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
@@ -87,15 +85,12 @@
             android:background="#90909090"
             tools:ignore="PxUsage" />
 
-        <Button
-            android:id="@+id/bid_button5"
-            android:layout_width="94dp"
-            android:layout_height="36dp"
-            android:layout_weight="0.31"
-            android:background="@drawable/buttonshape"
-            android:text="@string/Bid_$5"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp" />
+        <EditText 
+            android:id="@+id/BidEditField"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:hint="@string/Enter_a_Desired_Bid"
+            />
 
        
         

@@ -33,5 +33,6 @@
     <string name="Edit_Item">Edit Item</string>
     <string name="Edit_an_Item">Edit an Item</string>
     <string name="Delete_Item">Delete</string>
+    <string name="Enter_a_Desired_Bid">Bid Amount By...</string>
 
 </resources>
