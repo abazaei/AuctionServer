@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.example.auctionapplicationIntermed.AuctionItem;
+import com.example.auctionapplicationIntermed.CrudModel;
 import com.example.auctionapplicationIntermed.DateParser;
 import com.example.auctionapplicationIntermed.MoneyParser;
 
@@ -44,7 +45,7 @@ public class ItemEditView extends RelativeLayout implements View<SearchModel>, M
 	
 	public interface Listener extends View.Listener {
 
-		public void editItem(AuctionItem auctionItem) throws IOException;
+		public void editItem(CrudModel crudModel) throws IOException;
 		int idGenerator();
 		public void modelUpdate(BigDecimal startBid, String string, String string2, Date startDate, Date endDate);
 		
@@ -88,7 +89,7 @@ public class ItemEditView extends RelativeLayout implements View<SearchModel>, M
 					
 					
 					
-					listener.editItem(new AuctionItem(startBid,ItemName.getText().toString(), ItemDescription.getText().toString().replaceAll(" ", "_"), listener.idGenerator(), startDate, endDate));
+					listener.editItem(new CrudModel(CrudModel.Command.UPDATE, "ID: " + String.valueOf(id) + " NAME: " + ItemName.getText().toString() + " DESC: " + ItemDescription.getText().toString() + " STARTPRICE: " + startBid.toString() + " STARTDATE: " + DateParser.format(startDate) + " ENDDATE: " + DateParser.format(endDate)));
 					
 					
 					

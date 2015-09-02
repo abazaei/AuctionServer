@@ -20,7 +20,6 @@ import com.example.auctionapplicationIntermed.AuctionItem;
 import com.example.auctionapplicationIntermed.ItemClientException;
 import com.example.auctionapplicationIntermed.ItemNotFoundException;
 
-import fileio.BidServer;
 
 public class ItemServiceClient implements ItemService {
 

@@ -45,24 +45,36 @@ public class ItemAddController extends Controller<SearchModel> implements ItemAd
 		//
 		//		this.startActivity(newintent);
 		System.out.println("connect sending cM:ADD");
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("connect sending cM:ADD, outside try");
-				try(Socket s = new Socket("10.0.2.2", 31415);
-						ObjectOutputStream ooos = new ObjectOutputStream(s.getOutputStream())){
-					System.out.println("connect sending cM");
-					ooos.writeObject(cM);
-					ooos.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		Thread i =
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						System.out.println("connect sending cM:ADD, outside try");
+						try(Socket s = new Socket("10.0.2.2", 31415);
+								ObjectOutputStream ooos = new ObjectOutputStream(s.getOutputStream())){
+							System.out.println("connect sending cM");
+							ooos.writeObject(cM);
+							ooos.flush();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 
-			}
-		}).start();
+					}
+				});
 
+		i.start();
+		try {
+			i.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(!i.isAlive()){
+			this.finish();
+		}
 	}
+
 
 	@Override
 	protected void onCreate(Bundle bundle){

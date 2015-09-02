@@ -64,6 +64,7 @@ public class SearchModel implements Model<SearchModel> {
 	}
 
 	public void setItems(HashMap<Long, AuctionItem> itemlist) {
+		System.out.println("SetItems in SearchModel");
 		this.itemlist = itemlist;
 		listener.update(this);
 

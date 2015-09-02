@@ -38,6 +38,7 @@ public class BidServer{
 	private static File itemdb = new File("itemDB.txt");
 	private static File IDdb = new File("idDB.txt");
 	private static int AvailID = 0;
+	private static int idReferenced;
 
 	//showDirectory
 	//File directoy = new File(".");
@@ -45,6 +46,17 @@ public class BidServer{
 	//File file = new File("./sdcard", "items");
 	//file.createNewFile();
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		try {
+			
+			readThatLog();
+			System.out.println("Just Read The Log!");
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		ItemServiceServer iss = new ItemServiceServer();
 		System.out.println("Started Server.");
 		try(ServerSocket ss = new ServerSocket(31415)){ // You can reserve any port
@@ -61,7 +73,16 @@ public class BidServer{
 					System.out.println(command);
 
 					switch(command.getCommand()){
+					case UPDATEID:
+						idReferenced = Integer.parseInt(command.getArgs());
+						break;
 					case DELETE:
+						itemlist.remove(Long.valueOf(command.getArgs()));
+						deleteLine(Long.valueOf(command.getArgs()));
+						///
+						//HI ENOCH I WILL BRB 1 MIN
+						///
+
 
 						//ItemServiceClient.deleteItem(Integer.valueOf(command.getArgs()));
 						break;
@@ -72,27 +93,47 @@ public class BidServer{
 						// price name desc id start end
 						if(matcher.matches()){	
 							int i = getHighestID();
-							iss.addItem(new AuctionItem( BigDecimal.valueOf(Double.valueOf(matcher.group(3))), matcher.group(1), matcher.group(2), i, DateParser.parse(matcher.group(4)), DateParser.parse(matcher.group(5))));
-							writeToDB(new AuctionItem( BigDecimal.valueOf(Double.valueOf(matcher.group(3))), matcher.group(1), matcher.group(2), i, DateParser.parse(matcher.group(4)), DateParser.parse(matcher.group(5))));
+							iss.addItem(new AuctionItem(BigDecimal.valueOf(Double.valueOf(matcher.group(3))), matcher.group(1), matcher.group(2), i, DateParser.parse(matcher.group(4)), DateParser.parse(matcher.group(5))));
+							writeToDB(new AuctionItem(BigDecimal.valueOf(Double.valueOf(matcher.group(3))), matcher.group(1), matcher.group(2), i, DateParser.parse(matcher.group(4)), DateParser.parse(matcher.group(5))));
 							System.out.println("Adding: " + matcher.group(1));
 							//ItemServiceClient.addItem(new Item(organize the groups in the way you want.
-							
+
 						}else
 							System.out.println("does not contain the pattern");
 						break;
 					case BID:
-						Pattern pattern2 = Pattern.compile(("ID: ([0-9]*) BIDUP: ([0-9]*\\.[0-9]*)"));
+						Pattern pattern2 = Pattern.compile(("ID: ([0-9]*) BIDUP: ([0-9]*\\.*[0-9]*)"));
 						Matcher matcher2 = pattern2.matcher(command.getArgs());
+
+						try {
+							itemBid(Long.valueOf(command.getArgs()), BigDecimal.valueOf(Long.valueOf((matcher2.group(2)))));
+							bidLine(Long.valueOf(command.getArgs()), BigDecimal.valueOf(Long.valueOf((matcher2.group(2)))));
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ItemClientException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						//the Args should contain the value to increase by.
 						//ITemServiceClient.bid(Integer.valueOf(matcher2.group(1)),Long.valueOf(matcher2.group(2)))
 
 
 						break;
 					case UPDATE:
-						Pattern pattern3 = Pattern.compile(("NAME: (\\w*) DESC: (\\w*) STARTPRICE: ([0-9]*\\.*[0-9]*) STARTDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4}) ENDDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4})"));
+						Pattern pattern3 = Pattern.compile(("ID: ([0-9]*) NAME: (\\w*) DESC: (\\w*) STARTPRICE: ([0-9]*\\.*[0-9]*) STARTDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4}) ENDDATE: ([0-9]{0,2}\\/?[0-9]{0,2}\\/?[0-9]{0,4})"));
 						Matcher matcher3 = pattern3.matcher(command.getArgs());
 						if(matcher3.matches()){
-							//ItemServiceClient.deleteItem(Integer.valueOf(matcher3.group(1)
+							
+							//deleting
+							deleteItemInList(Long.valueOf(String.valueOf(idReferenced)));
+							deleteLine(idReferenced);
+							
+							//creating
+							int i = getHighestID();
+							iss.addItem(new AuctionItem(BigDecimal.valueOf(Double.valueOf(matcher3.group(4))), matcher3.group(2), matcher3.group(3), i, DateParser.parse(matcher3.group(5)), DateParser.parse(matcher3.group(6))));
+							writeToDB(new AuctionItem(BigDecimal.valueOf(Double.valueOf(matcher3.group(4))), matcher3.group(2), matcher3.group(3), i, DateParser.parse(matcher3.group(5)), DateParser.parse(matcher3.group(6))));
+							System.out.println("Adding: " + matcher3.group(1));
 							//ItemServiceClient.addItem(new Item(organize the groups in the way you want.
 						}
 						break;
@@ -101,36 +142,46 @@ public class BidServer{
 						//hashmap w/ items from search
 						//nextID int
 						//getItembyID
-
+						
+						
 						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-
-						switch(command.getArgs()){
-						case "GETHASHMAP":
-//							oos.writeObject(getSearchedItems());
-							break;
-						case "GETNEXTID":
-							//sync this
-//							synchronize(AvailID) { 
-//							oos.writeObject(AvailID++);
-//							}
-							break;
-						case "GETITEMBYID":
-							break;
-						default:
-							//FIx THIS
-							oos.writeObject(itemlist);
-							System.out.println("the thing wants to read");
-							break;
-						}
+						
+						oos.writeObject(iss.search(command.getArgs()));
+						oos.flush();
+						System.out.println("the thing wants to read");
+						
+//						switch(command.getArgs()){
+//						case "GETHASHMAP":
+//							readThatLog();
+//							//							oos.writeObject(getSearchedItems());
+//							break;
+//						case "GETNEXTID":
+//							//sync this
+//							//							synchronize(AvailID) { 
+//							//							oos.writeObject(AvailID++);
+//							//							}
+//							break;
+//						case "GETITEMBYID":
+//							break;
+//						default:
+//							//FIx THIS
+//							break;
+//						}
 					}
 				}
 			}
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-	
+
 	private static int getHighestID() throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(IDdb));
-		
+
 		String dummy = "";
 		while((dummy = br.readLine()) != null){
 			System.out.println(dummy);
@@ -143,32 +194,34 @@ public class BidServer{
 			}
 		}
 		return -1;
-		
+
 	}
-	
+
 	public static void writeToDB(AuctionItem newitem) throws IOException{
 		itemdb.createNewFile();
 		FileWriter fw = new FileWriter(itemdb,true);
 		BufferedReader br = new BufferedReader(new FileReader(itemdb));
 
-		
+		fw.write("\n");
 		fw.write("ADD;"+ newitem.getItemID() + ";" + newitem.getName()+";"+newitem.getDescription()+";"+newitem.getBidPrice()+";"+DateParser.format(newitem.getStartDate())+";"
 				+DateParser.format(newitem.getEndDate()));
-		fw.write("\n");
+		
 		fw.close();
 
 	}
-	public void readThatLog() throws NumberFormatException, Exception{
+	public static void readThatLog() throws NumberFormatException, Exception{
 
-
+		System.out.println("Read Log Method");
 		BufferedReader br = new BufferedReader(new FileReader(itemdb));
 		br.readLine();
 		while(true){
 			String line = br.readLine();
+			System.out.println("Line I'm on: "+line);
 			if(line != null){
+				
 				String[] lines = line.split(";");
 				if(lines[0].equalsIgnoreCase("add")){
-
+					System.out.println(lines[1]);
 					if(!lines[3].equals("null")){
 						addItemToList(new AuctionItem(BigDecimal.valueOf((long) Double.parseDouble((lines[4]))), lines[2], lines[3], Integer.parseInt(lines[1]),
 								DateParser.parse(lines[5]), DateParser.parse(lines[6])));
@@ -211,11 +264,11 @@ public class BidServer{
 
 	}
 
-	private void updateItemToList(AuctionItem auctionItem) {
+	private static void updateItemToList(AuctionItem auctionItem) {
 		itemlist.put((long) auctionItem.getItemID(), auctionItem);
 
 	}
-	private void deleteItemInList(Long valueOf) throws ItemNotFoundException {
+	private static void deleteItemInList(Long valueOf) throws ItemNotFoundException {
 
 		if(itemlist.get(valueOf)==null){
 			//null because log is ran each time the window is created
@@ -224,7 +277,7 @@ public class BidServer{
 		itemlist.remove(valueOf);
 
 	}
-	private void itemBid(Long id, BigDecimal bidIncrease) throws ItemClientException {
+	private static void itemBid(Long id, BigDecimal bidIncrease) throws ItemClientException {
 
 
 		if(itemlist.get(id).getEndDate().after(new Date())){
@@ -237,7 +290,7 @@ public class BidServer{
 
 
 	}
-	private void addItemToList(AuctionItem auctionItem) {
+	private static void addItemToList(AuctionItem auctionItem) {
 		itemlist.put((long)auctionItem.getItemID(), auctionItem);
 
 	}
@@ -258,20 +311,21 @@ public class BidServer{
 		br.close();
 	}
 
-	public void deleteLine(long l) throws IOException {
+	public static void deleteLine(long l) throws IOException {
 		//take the long, check the line with the id that equals long, and replace line some how...
 
 		BufferedReader br = new BufferedReader(new FileReader(itemdb));
 		FileWriter fw = new FileWriter(itemdb,true);
 
-
-		fw.write("DELETE;"+l);
+		
 		fw.write("\n");
+		fw.write("DELETE;"+l);
+		
 		fw.close();
 		br.close();
 
 	}
-	public void bidLine(long id, BigDecimal bidIncrease) throws IOException {
+	public static void bidLine(long id, BigDecimal bidIncrease) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(itemdb));
 		FileWriter fw = new FileWriter(itemdb,true);
 		fw.write("BID;"+id+";"+bidIncrease);

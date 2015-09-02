@@ -113,8 +113,22 @@ public class ItemServiceServer {
 		}
 
 
-		return (CollectionUtils.filter(BidServer.itemlist.values(), P.pop()));
+		return timeCheck(CollectionUtils.filter(BidServer.itemlist.values(), P.pop()));
 		//timeCheck(the return) , but I took it out becaues of compiler errors
+	}
+	
+	public Collection<AuctionItem> timeCheck (Collection<AuctionItem> items){
+
+		Collection<AuctionItem> newitems = new ArrayList<>();
+
+		for (AuctionItem auctionItem : items) {
+			if(auctionItem!= null)
+				if(auctionItem.getEndDate().after(new Date())){
+					newitems.add(auctionItem);
+				}
+		}
+
+		return newitems;
 	}
 }
 

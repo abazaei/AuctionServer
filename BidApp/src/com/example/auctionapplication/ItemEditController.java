@@ -1,7 +1,9 @@
 package com.example.auctionapplication;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.example.auctionapplicationIntermed.AuctionItem;
+import com.example.auctionapplicationIntermed.CrudModel;
 
 import edu.neumont.csc180.mvc.Controller;
 import ItemService.ItemServiceClient;
@@ -30,22 +33,36 @@ public class ItemEditController extends Controller<SearchModel> implements ItemE
 	}
 	
 	@Override
-	public void editItem(AuctionItem item) throws IOException {
-		
-		Intent newintent = new Intent(this, SearchController.class);
-//		model.addItemToList(item);
-		newintent.putExtra("Items", model.getItems());	//CURRENTLY NOT UPDATING THE SEARCH VIEW
-		newintent.putExtra("ViewName", "activity_search");	
-		newintent.putExtra("firstTime", false);
+	public void editItem(final CrudModel cM) throws IOException {
+		System.out.println("connect sending cM:UPDATE");
+		Thread i =
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						System.out.println("connect sending cM:UPDATE, outside try");
+						try(Socket s = new Socket("10.0.2.2", 31415);
+								ObjectOutputStream ooos = new ObjectOutputStream(s.getOutputStream())){
+							System.out.println("connect sending cM");
+							ooos.writeObject(cM);
+							ooos.flush();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+				});
+
+		i.start();
 		try {
-			isc.update(item);
-		} catch (Exception e) {
+			i.join();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		setResult(ItemEditController.RESULT_OK, newintent);
-		
-		finish(); 
+		if(!i.isAlive()){
+			this.finish();
+		}
 		
 		
 	}	
