@@ -84,11 +84,14 @@ public class ItemEditView extends RelativeLayout implements View<SearchModel>, M
 				Date startDate = StartDate.getText().toString().isEmpty() ? new Date() : DateParser.parse(StartDate.getText().toString());
 			    Date endDate = EndDate.getText().toString().isEmpty() ? cal.getTime() : DateParser.parse(EndDate.getText().toString());
 				try {
+					System.out.println(startDate.toString());
+					System.out.println(endDate.toString());
+					System.out.println("Description of Edited Item: "+ItemDescription);
+					System.out.println(ItemPrice.getText().toString());
+					System.out.println("Edited Item's ID: "+String.valueOf(id));
+					System.out.println("Edited Item's Name: " +ItemName.getText().toString());
 					
-					System.out.println(id);
-					
-					
-					
+//					Toast.makeText(getContext(), "Edited!", Toast.LENGTH_SHORT);
 					listener.editItem(new CrudModel(CrudModel.Command.UPDATE, "ID: " + String.valueOf(id) + " NAME: " + ItemName.getText().toString() + " DESC: " + ItemDescription.getText().toString() + " STARTPRICE: " + startBid.toString() + " STARTDATE: " + DateParser.format(startDate) + " ENDDATE: " + DateParser.format(endDate)));
 					
 					

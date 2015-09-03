@@ -31,6 +31,10 @@ public class SearchModel implements Model<SearchModel> {
 	public SearchModel() {
 
 	}
+	
+//	public void updateView(){
+//		listener.update(this);
+//	}
 
 	@Override
 	public void setListener(

@@ -11,7 +11,8 @@ public class MoneyParser {
 		
 		BigDecimal newval = null;
 		
-		Pattern patternex = Pattern.compile("\\$?(([0-9]\\d{0,2}((,\\d{3})*)?(\\.\\d{1,2})?))");
+		Pattern patternex = Pattern.compile("\\$?(([0-9]\\d{0,}((,\\d{3})*)?(\\.\\d{1,2})?))");
+		System.out.println(parsestring);
 		if(Pattern.matches(patternex.pattern(), parsestring))
 		{
 			parsestring = parsestring.replaceAll(patternex.pattern(), "$1");

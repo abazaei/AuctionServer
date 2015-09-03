@@ -51,6 +51,7 @@ public class ItemServiceServer {
 		BidServer.itemlist.remove(valueOf);
 
 	}
+	
 	public void updateItemToList(AuctionItem auctionItem) {
 		BidServer.itemlist.put((long) auctionItem.getItemID(), auctionItem);
 	}

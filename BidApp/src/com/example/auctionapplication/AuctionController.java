@@ -40,27 +40,31 @@ public class AuctionController extends Controller<AuctionModel> implements Aucti
 
 	}
 	
-	public void updatePrice(BigDecimal d){
-		model.setBidPrice(d);
+	public void updatePrice(String d){
+		if(!d.equals(""))
+			model.setBidPrice(model.getItem().getBidPrice().add(BigDecimal.valueOf(Long.valueOf((d)))));
+		else
+			model.setBidPrice(new BigDecimal(1));
 	}
 	
 	public void updateID(){
-		Thread i = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				try(Socket s = new Socket("10.0.2.2", 31415);
-						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())){
-					oos.writeObject(new CrudModel(Command.UPDATEID, String.valueOf(model.getItem().getItemID())));
-					oos.flush();
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		i.start();
+//		Thread i = new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				try(Socket s = new Socket("10.0.2.2", 31415);
+//						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())){
+//					oos.writeObject(new CrudModel(Command.UPDATEID, String.valueOf(model.getItem().getItemID())));
+//					oos.flush();
+//					
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		i.start();
+		ItemServiceClient.crudDispatch(new CrudModel(Command.UPDATEID, String.valueOf(model.getItem().getItemID())));
 		
 	}
 
@@ -90,27 +94,28 @@ public class AuctionController extends Controller<AuctionModel> implements Aucti
 
 	@Override	
 	public void delete(final int itemID) throws IOException {
-		Thread i = new Thread( new Runnable() {
-
-			@Override
-			public void run() {
-				try (Socket s = new Socket("10.0.2.2", 31415);
-						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())){
-					oos.writeObject(new CrudModel(CrudModel.Command.DELETE, String.valueOf(itemID)));
-					oos.flush();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		i.start();
-		try {
-			i.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		Thread i = new Thread( new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				try (Socket s = new Socket("10.0.2.2", 31415);
+//						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())){
+//					oos.writeObject(new CrudModel(CrudModel.Command.DELETE, String.valueOf(itemID)));
+//					oos.flush();
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		i.start();
+//		try {
+//			i.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		ItemServiceClient.crudDispatch(new CrudModel(CrudModel.Command.DELETE, String.valueOf(itemID)));
 		finish();
 	}
 }

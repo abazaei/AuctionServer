@@ -51,6 +51,8 @@ public class SearchController extends Controller<SearchModel> implements SearchV
 	@Override
 	public void onResume(){
 		super.onResume();
+//		searchItems("");
+		
 		StrictMode.ThreadPolicy.Builder stB = new StrictMode.ThreadPolicy.Builder();
 		stB.permitNetwork();
 		
@@ -61,8 +63,10 @@ public class SearchController extends Controller<SearchModel> implements SearchV
 			public void run() {
 				try(Socket s = new Socket("10.0.2.2", 31415);
 						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())){
-					oos.writeObject(
-							new CrudModel(Command.READ, ""));
+					
+					oos.writeObject(new CrudModel(Command.READ, ""));
+					oos.writeObject(new CrudModel(Command.READ, ""));
+					
 					oos.flush();
 					
 
@@ -73,13 +77,24 @@ public class SearchController extends Controller<SearchModel> implements SearchV
 			}
 		});
 		
-		i.start();
 		
+		i.start();
+		searchItems("");
 		
 		
 	
 
 	}
+
+
+//	@Override
+//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		// TODO Auto-generated method stub
+//		super.onActivityResult(requestCode, resultCode, data);
+//		
+//		searchItems("");
+//	}
+
 
 
 
@@ -96,46 +111,14 @@ public class SearchController extends Controller<SearchModel> implements SearchV
 	}
 
 	public void searchItems(final String txt){
-
+		
 
 		//change to model  <<<<<
 		System.out.println("Searching: " + txt);
-		Thread i = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try(Socket s = new Socket("10.0.2.2", 31415);
-						ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());){
+					collect = ItemServiceClient.readServerMap(new CrudModel(CrudModel.Command.READ, txt));
 
-					//					System.out.println("inside ois for search");
-					oos.writeObject(new CrudModel(CrudModel.Command.READ, txt));
-					oos.flush();
-					//					System.out.println("readingObj");
-					ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 
-					HashMap<Long, AuctionItem> hM = new HashMap<Long, AuctionItem>(); /* (HashMap<Long,AuctionItem>)ois.readObject();*/
-					Long l;
-					for(AuctionItem i : (Collection<AuctionItem>)ois.readObject()){
-						hM.put(l = new Long(i.getItemID()), i);
-
-					}
-
-					System.out.println(hM.toString());
-					collect = hM;
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					System.out.println("HelloIO: " + e.getMessage());
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					System.out.println("classNotFoundHello");
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println("After Exceptions");
-
-			}
-		});
-		i.start();
+		
 		//		try {
 		//			i.join();
 		//		} catch (InterruptedException e) {
@@ -224,24 +207,25 @@ public class SearchController extends Controller<SearchModel> implements SearchV
 
 	@Override
 	public void sendCrud(final Command add, final String string) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try(
-						Socket s = new Socket("10.0.2.2", 31415);
-						ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
-						) {
-					System.out.println("Sending Crud.");
-					os.writeObject(new CrudModel(add, string));
-					os.flush();
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		}).start();
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				try(
+//						Socket s = new Socket("10.0.2.2", 31415);
+//						ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
+//						) {
+//					System.out.println("Sending Crud.");
+//					os.writeObject(new CrudModel(add, string));
+//					os.flush();
+//
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		}).start();
+		ItemServiceClient.crudDispatch(new CrudModel(add,string));
 	}
 
 }

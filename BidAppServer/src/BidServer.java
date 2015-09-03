@@ -183,7 +183,7 @@ public class BidServer{
 		}
 	}
 
-	private static int getHighestID() throws IOException{
+	private static synchronized int getHighestID() throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(IDdb));
 
 		String dummy = "";
@@ -217,7 +217,7 @@ public class BidServer{
 
 		System.out.println("Read Log Method");
 		BufferedReader br = new BufferedReader(new FileReader(itemdb));
-		br.readLine();
+
 		while(true){
 			String line = br.readLine();
 			System.out.println("Line I'm on: "+line);

@@ -73,7 +73,9 @@ public class SearchView extends LinearLayout implements View<SearchModel>, Model
 	}
 
 
-
+	public void click(){
+		searchQuery.callOnClick();
+	}
 	protected void 	onFinishInflate(){
 
 		super.onFinishInflate();
@@ -101,9 +103,9 @@ public class SearchView extends LinearLayout implements View<SearchModel>, Model
 			@Override
 			public void onClick(android.view.View v) {
 				//				Log.w("ERRORONCLICK!!!!", searchQuery.getText().toString());
-				System.out.println("clicked");
-				System.out.println(searchQuery);
-				System.out.println(":" + searchQuery.getText());
+//				System.out.println("clicked");
+//				System.out.println(searchQuery);
+//				System.out.println(":" + searchQuery.getText());
 					listener.searchItems(searchQuery.getText().toString());
 				//				listener.sendCrud(CrudModel.Command.READ, searchQuery.getText().toString());
 

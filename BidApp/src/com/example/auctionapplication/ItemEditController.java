@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class ItemEditController extends Controller<SearchModel> implements ItemEditView.Listener{
 
@@ -35,35 +36,37 @@ public class ItemEditController extends Controller<SearchModel> implements ItemE
 	@Override
 	public void editItem(final CrudModel cM) throws IOException {
 		System.out.println("connect sending cM:UPDATE");
-		Thread i =
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						System.out.println("connect sending cM:UPDATE, outside try");
-						try(Socket s = new Socket("10.0.2.2", 31415);
-								ObjectOutputStream ooos = new ObjectOutputStream(s.getOutputStream())){
-							System.out.println("connect sending cM");
-							ooos.writeObject(cM);
-							ooos.flush();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					}
-				});
-
-		i.start();
-		try {
-			i.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(!i.isAlive()){
-			this.finish();
-		}
+//		Thread i =
+//				new Thread(new Runnable() {
+//					@Override
+//					public void run() {
+//						System.out.println("connect sending cM:UPDATE, outside try");
+//						try(Socket s = new Socket("10.0.2.2", 31415);
+//								ObjectOutputStream ooos = new ObjectOutputStream(s.getOutputStream())){
+//							System.out.println("connect sending cM");
+//							ooos.writeObject(cM);
+//							ooos.flush();
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//
+//					}
+//				});
+//
+//		i.start();
+//		try {
+//			i.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		if(!i.isAlive()){
+//			this.finish();
+//		}
+		ItemServiceClient.crudDispatch(cM);
 		
+		finish();
 		
 	}	
 

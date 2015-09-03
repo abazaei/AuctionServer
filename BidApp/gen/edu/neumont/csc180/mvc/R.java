@@ -11,7 +11,7 @@ public final class R {
 		public static final int ic_launcher = 0x7f020002;
 	}
 	public static final class id {
-		public static final int mvc_default = 0x7f080020;
+		public static final int mvc_default = 0x7f08001f;
 	}
 	public static final class menu {
 		public static final int mvc_default = 0x7f070004;
